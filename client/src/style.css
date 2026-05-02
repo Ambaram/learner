@@ -553,3 +553,202 @@ label.bpm input {
   font-size: 0.78rem;
   padding: 0.25rem 0.55rem;
 }
+
+/* Vocal lab */
+.hero-actions {
+  margin: 0 0 1.25rem;
+}
+
+.btn.hero-cta {
+  padding: 0.55rem 1.25rem;
+  font-size: 0.95rem;
+  border-color: var(--accent);
+}
+
+.vocal-layout .course-head h1 {
+  font-family: var(--serif);
+}
+
+.vocal-nav-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 720px) {
+  .vocal-nav-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.vocal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  transition: border-color 0.15s, transform 0.12s;
+}
+
+.vocal-card:hover {
+  border-color: var(--accent2);
+  transform: translateY(-2px);
+}
+
+.vocal-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+
+.vocal-card p {
+  margin: 0 0 0.75rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.vocal-card .chev {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  color: var(--accent);
+}
+
+.vocal-card.accent {
+  border-color: rgba(201, 162, 39, 0.45);
+}
+
+.vocal-card.accent2 {
+  border-color: rgba(61, 156, 253, 0.45);
+}
+
+.diag-panel h2 {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.diag-panel h2:first-child {
+  margin-top: 0;
+}
+
+.chk-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.chk {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.select-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+  max-width: 28rem;
+}
+
+.select-row select {
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text);
+}
+
+.drill-grid {
+  display: grid;
+  gap: 0.65rem;
+}
+
+@media (min-width: 560px) {
+  .drill-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.drill-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+}
+
+.drill-card h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  color: var(--accent2);
+}
+
+.drill-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.vrec-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 0.75rem 0;
+}
+
+.vrec-live {
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+  padding: 0.65rem 0.75rem;
+  background: var(--bg2);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  min-height: 2.5rem;
+}
+
+.feedback-block {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.suggest-grid {
+  display: grid;
+  gap: 0.65rem;
+}
+
+@media (min-width: 640px) {
+  .suggest-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.suggest-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+}
+
+.suggest-card h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.92rem;
+}
+
+.suggest-card p {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.muted.small {
+  font-size: 0.82rem;
+}
+
