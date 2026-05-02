@@ -1,17 +1,18 @@
-# Deploys the production build to branch `gh-pages` (static files only).
+# Copies `npm run build` output into `site/` on branch `main` and commits it.
+# GitHub Pages must publish THAT folder (not repo root), or you get dev index + /src/main.ts 404.
 #
-# Setup (one time): Repository → Settings → Pages → Build and deployment
-#   • Source: "Deploy from a branch" (NOT "GitHub Actions")
-#   • Branch: gh-pages   /   Folder: / (root)
+# Settings → Pages → Deploy from a branch:
+#   Branch: main   |   Folder: /site
 #
-# If Source stays on "main" + /(root), GitHub serves dev index.html with
-# /src/main.ts → blank site. The gh-pages branch only contains `npm run build` output.
+# Commits use [skip ci] so updating site/ does not re-trigger this workflow.
 
 name: Deploy GitHub Pages
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'site/**'
 
 permissions:
   contents: write
@@ -41,10 +42,16 @@ jobs:
           grep -q '/learner/assets/' dist/index.html || (echo 'dist/index.html missing /learner/assets/' && exit 1)
           ! grep -q 'src="/src/main.ts"' dist/index.html || (echo 'dist still references dev entry' && exit 1)
 
-      - name: Push dist to gh-pages branch
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: dist
-          clean: true
-          single-commit: true
+      - name: Sync site/ and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -rf site
+          cp -r dist site
+          git add -f site/
+          if git diff --staged --quiet; then
+            echo "No site/ changes"
+            exit 0
+          fi
+          git commit -m "chore: update site/ for GitHub Pages [skip ci]"
+          git push
