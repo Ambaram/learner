@@ -1,5 +1,9 @@
+import path from 'path'
+import { fileURLToPath } from 'url'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
+
+const dir = path.dirname(fileURLToPath(import.meta.url))
 
 /** GitHub project Pages URL: https://<user>.github.io/<repo>/ */
 const REPO_BASE = '/learner/'
@@ -8,7 +12,12 @@ export default defineConfig(({ command }) => {
   const base = command === 'build' ? REPO_BASE : '/'
 
   return {
+    root: path.resolve(dir, 'client'),
     base,
+    build: {
+      outDir: path.resolve(dir, 'dist'),
+      emptyOutDir: true,
+    },
     plugins: [
       VitePWA({
         registerType: 'autoUpdate',

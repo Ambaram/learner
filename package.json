@@ -10,6 +10,7 @@
     "icons": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/gen-pwa-icons.ps1"
   },
   "devDependencies": {
+    "@types/node": "^22.19.17",
     "typescript": "~5.6.3",
     "vite": "^5.4.11",
     "vite-plugin-pwa": "^0.21.1"

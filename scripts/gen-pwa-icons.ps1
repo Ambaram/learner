@@ -17,7 +17,7 @@ function Save-Icon {
   $bmp.Dispose()
   $brush.Dispose()
 }
-$public = (Resolve-Path (Join-Path $PSScriptRoot '..\public')).Path
+$public = (Resolve-Path (Join-Path $PSScriptRoot '..\client\public')).Path
 Save-Icon 192 (Join-Path $public 'pwa-192.png')
 Save-Icon 512 (Join-Path $public 'pwa-512.png')
 Write-Host 'Wrote pwa-192.png and pwa-512.png'

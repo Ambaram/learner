@@ -1,10 +1,9 @@
-# Copies `npm run build` output into `site/` on branch `main` and commits it.
-# GitHub Pages must publish THAT folder (not repo root), or you get dev index + /src/main.ts 404.
+# Copies production build from `dist/` to repository root for GitHub Pages
+# when Source = Deploy from branch → main → / (root).
 #
-# Settings → Pages → Deploy from a branch:
-#   Branch: main   |   Folder: /site
+# Source code lives under `client/`; root `index.html` + `assets/` are build output only.
 #
-# Commits use [skip ci] so updating site/ does not re-trigger this workflow.
+# Commits use [skip ci] so publishing does not re-trigger this workflow.
 
 name: Deploy GitHub Pages
 
@@ -12,7 +11,16 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - 'site/**'
+      - 'assets/**'
+      - 'index.html'
+      - 'sw.js'
+      - 'manifest.webmanifest'
+      - 'favicon.svg'
+      - 'icons.svg'
+      - 'pwa-192.png'
+      - 'pwa-512.png'
+      - '.nojekyll'
+      - 'workbox-*.js'
 
 permissions:
   contents: write
@@ -40,18 +48,24 @@ jobs:
       - name: Verify production bundle (GitHub project Pages base path)
         run: |
           grep -q '/learner/assets/' dist/index.html || (echo 'dist/index.html missing /learner/assets/' && exit 1)
-          ! grep -q 'src="/src/main.ts"' dist/index.html || (echo 'dist still references dev entry' && exit 1)
+          ! grep -qE '\\./src/main\\.ts|/src/main\\.ts' dist/index.html || (echo 'dist still references dev entry' && exit 1)
 
-      - name: Sync site/ and push
+      - name: Publish dist to repo root
         run: |
+          set -e
+          for f in index.html manifest.webmanifest sw.js favicon.svg icons.svg .nojekyll; do
+            if [ -f "dist/$f" ]; then cp -f "dist/$f" "./$f"; fi
+          done
+          cp -f dist/pwa-192.png dist/pwa-512.png ./
+          rm -rf assets
+          cp -R dist/assets ./assets
+          cp -f dist/workbox-*.js ./
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          rm -rf site
-          cp -r dist site
-          git add -f site/
+          git add -f index.html assets manifest.webmanifest sw.js workbox-*.js favicon.svg icons.svg pwa-192.png pwa-512.png .nojekyll
           if git diff --staged --quiet; then
-            echo "No site/ changes"
+            echo "No root publish changes"
             exit 0
           fi
-          git commit -m "chore: update site/ for GitHub Pages [skip ci]"
+          git commit -m "chore: publish Pages build to repo root [skip ci]"
           git push
