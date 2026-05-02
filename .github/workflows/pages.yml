@@ -1,7 +1,11 @@
-# Publishes the Vite `dist/` folder. You MUST set the repo Pages source to this workflow:
-# Settings → Pages → Build and deployment → Source: "GitHub Actions".
-# If Source is "Deploy from a branch" (e.g. / (root)), GitHub serves the dev index.html
-# which loads /src/main.ts from the site root → blank page under /learner/.
+# Deploys the production build to branch `gh-pages` (static files only).
+#
+# Setup (one time): Repository → Settings → Pages → Build and deployment
+#   • Source: "Deploy from a branch" (NOT "GitHub Actions")
+#   • Branch: gh-pages   /   Folder: / (root)
+#
+# If Source stays on "main" + /(root), GitHub serves dev index.html with
+# /src/main.ts → blank site. The gh-pages branch only contains `npm run build` output.
 
 name: Deploy GitHub Pages
 
@@ -10,16 +14,14 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,19 +38,13 @@ jobs:
 
       - name: Verify production bundle (GitHub project Pages base path)
         run: |
-          grep -q '/learner/assets/' dist/index.html || (echo 'dist/index.html missing /learner/assets/ — check vite.config.ts base' && exit 1)
-          ! grep -q 'src="/src/main.ts"' dist/index.html || (echo 'dist still references dev entry — build misconfigured' && exit 1)
+          grep -q '/learner/assets/' dist/index.html || (echo 'dist/index.html missing /learner/assets/' && exit 1)
+          ! grep -q 'src="/src/main.ts"' dist/index.html || (echo 'dist still references dev entry' && exit 1)
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Push dist to gh-pages branch
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/deploy-pages@v4
-        id: deployment
+          branch: gh-pages
+          folder: dist
+          clean: true
+          single-commit: true
