@@ -1,3 +1,8 @@
+# Publishes the Vite `dist/` folder. You MUST set the repo Pages source to this workflow:
+# Settings → Pages → Build and deployment → Source: "GitHub Actions".
+# If Source is "Deploy from a branch" (e.g. / (root)), GitHub serves the dev index.html
+# which loads /src/main.ts from the site root → blank page under /learner/.
+
 name: Deploy GitHub Pages
 
 on:
@@ -28,6 +33,11 @@ jobs:
         run: |
           npm ci
           npm run build
+
+      - name: Verify production bundle (GitHub project Pages base path)
+        run: |
+          grep -q '/learner/assets/' dist/index.html || (echo 'dist/index.html missing /learner/assets/ — check vite.config.ts base' && exit 1)
+          ! grep -q 'src="/src/main.ts"' dist/index.html || (echo 'dist still references dev entry — build misconfigured' && exit 1)
 
       - uses: actions/upload-pages-artifact@v3
         with:
